@@ -6,3 +6,4 @@ LouPlus Team 3 https://www.shiyanlou.com/louplus/python
 * [louplus](https://github.com/louplus)
 * [Avery](https://github.com/wuqize)
 * [rainbowjl](https://github.com/rainbowjlinux)
+* [chase](https://github.com/goodwillchase)
