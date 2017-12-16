@@ -1,0 +1,13 @@
+#Byte-compiled
+__pycache__/
+*.py[cod]
+
+#virtualenv
+venv/
+env/
+
+#flask-migrate
+migrations/
+
+#ctags
+tags
