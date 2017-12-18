@@ -40,3 +40,25 @@ $ FLUSH PRIVILEGES;
 
 2.设置环境
 在 config.py 中设置 CURRENT_ENV
+
+
+# 使用flask-migrate管理数据库
+在项目根目录下执行命令：
+
+```
+$flask db init
+
+$flask db migrate -m 'init database'
+
+$flask db upgrade
+```
+目前仅创建了 user、company、job三个表
+
+可进入mysql，执行以下命令查看是否创建成功
+
+```
+mysql> use jobplus_dev;
+mysql> show create table user;
+mysql> show create table company;
+mysql> show create table job;
+```
