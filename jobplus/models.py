@@ -1,4 +1,8 @@
+#coding=utf-8
+
 from datetime import datetime
+
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,7 +18,7 @@ class Base (db.Model):
                            onupdate=datetime.utcnow)
 
 
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'user'
 
     ROLE_USER = 10
@@ -25,6 +29,9 @@ class User(Base):
     username = db.Column(db.String(32), unique=True, index=True, nullable=False)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     _password = db.Column('password', db.String(256), nullable=False)
+    real_name = db.Column(db.String(32), unique=True, index=True, nullable=True)
+    phone_number = db.Column(db.String(11))
+    work_years = db.Column(db.SmallInteger)
     role = db.Column(db.SmallInteger, default=ROLE_USER)
     resume_url = db.Column(db.String(128))
 
@@ -37,17 +44,25 @@ class User(Base):
 
     @password.setter
     def password(self, orig_password):
+        """ 设置密码
+        """
         self._password = generate_password_hash(orig_password)
 
     def check_password(self, password):
+        """ 确认密码是否正确
+        """
         return check_password_hash(self._password, password)
 
     @property
     def is_admin(self):
+        """ 是否为管理员
+        """
         return self.role == self.ROLE_ADMIN
 
     @property
     def is_company(self):
+        """ 是否为企业用户
+        """
         return self.role == self.ROLE_COMPANY
 
 
@@ -57,7 +72,6 @@ class Company(Base):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, index=True, nullable=False)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    _password = db.Column('password', db.String(256), nullable=False)
     logo = db.Column(db.String(64), nullable=False)
     location = db.Column(db.String(32))
     description = db.Column(db.String(1500))
@@ -77,7 +91,7 @@ class Job(Base):
     salary_high = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String(24))
     description = db.Column(db.String(1500))
-    company_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete='CASCADE'))
     company = db.relationship('Company', uselist=False, backref=db.backref('jobs', lazy='dynamic'))
 
     def __repr__(self):
