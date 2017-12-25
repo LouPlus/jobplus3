@@ -35,21 +35,52 @@
             <li><a href="/">职位</a></li>
             <li><a href="/">公司</a></li>
         </ul>
+        <!-- 用户是否登录 -->
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/">登录</a></li>
+            {% if not current_user.is_authenticated %}
+                <li><a href="{{ url_for('front.register') }}">求职者注册</a></li>
+                <li><a href="{{ url_for('front.register') }}">公司注册</a></li>
+                <li><a href="{{ url_for('front.login') }}">登录</a></li>
+
+                <!--
+                或者
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">注册<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('front.register') }}">求职者注册</a></li>
+                    <li><a href="{{ url_for('front.register') }}">公司注册</a></li>
+                </ul>
+                </li>
+                <li><a href="{{ url_for('front.login') }}">登录</a></li>
+                -->
+
+        {% else %}
             <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">注册<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="#">求职者注册</a></li>
-                <li><a href="/">公司注册</a></li>
-            </ul>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ current_user.username }}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">个人主页</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="＃">退出登录</a></li>
+                </ul>
             </li>
+        {% endif %}
         </ul>
 
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     </nav>
     <div class="container">
+        <!-- 显示 flash 消息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endwith %}
 
         {% block body %}
         {% endblock %}
