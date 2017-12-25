@@ -38,7 +38,7 @@ $ GRANT ALL PRIVILEGES ON jobplus_test.* TO 'jobplus'@'localhost' IDENTIFIED BY 
 $ FLUSH PRIVILEGES;
 ```
 
-2.设置环境
+2.设置环境    
 在 config.py 中设置 CURRENT_ENV
 
 
