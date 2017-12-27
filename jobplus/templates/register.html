@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+{% from "macros.html" import render_form %}
+
+{% block title %}{{ topic }}{% endblock %}
 
 {% block body %}
-<h1>Register Page</h1>
+<div class="form">
+  <h2>{{ topic }}</h2>
+  {{ render_form(form, post_url) }}
+</div>
 {% endblock %}

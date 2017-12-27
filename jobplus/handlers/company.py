@@ -14,6 +14,9 @@ company = Blueprint('company', __name__, url_prefix='/companies')
 @login_required
 @company_required
 def profile():
+    """
+    企业信息配置
+    """
     form = CompanyProfileForm(obj=current_user.company)
     form.name.data = current_user.username
     form.email.data = current_user.email

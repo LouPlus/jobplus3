@@ -7,7 +7,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 
 def register_extensions(app):
-    """ 添加扩展
+    """
+    添加扩展
     """
     db.init_app(app)
     Migrate(app, db)
@@ -29,6 +30,9 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
+    """
+    蓝图注册
+    """
     from .handlers import front, user, company, admin, job
     app.register_blueprint(front)
     app.register_blueprint(user)
@@ -38,7 +42,8 @@ def register_blueprints(app):
 
 
 def create_app():
-    """可以根据传入的 config 名称，加载不同的配置
+    """
+    可以根据传入的 config 名称，加载不同的配置
     """
     app = Flask(__name__)
     app.config.from_object(configs.get(CURRENT_ENV))

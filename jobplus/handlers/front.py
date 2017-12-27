@@ -13,30 +13,44 @@ front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
+    """
+    首页
+    """
     return render_template('index.html')
 
 
 @front.route("/userregister", methods=["GET", "POST"])
 def userregister():
+    """
+    用户注册
+    """
     form = RegisterForm()
+    post_url = url_for("front.userregister")
     if form.validate_on_submit():
         form.create_user()
         flash('注册成功，请登录！', 'success')
         return redirect(url_for('.login'))
-    return render_template('register.html', form=form, topic="用户注册")
+    return render_template('register.html', form=form, post_url=post_url, topic="用户注册")
 
 @front.route("/companyregister", methods=["GET", "POST"])
 def companyregister():
+    """
+    公司注册
+    """
     form = CompanyRegisterForm()
+    post_url = url_for("front.companyregister")
     if form.validate_on_submit():
         form.create_user()
         flash('注册成功，请登录！', 'success')
         return redirect(url_for('.login'))
-    return render_template('register.html', form=form, topic="企业注册")
+    return render_template('register.html', form=form, post_url=post_url, topic="企业注册")
 
 
 @front.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    登陆
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -56,6 +70,9 @@ def login():
 @front.route("/logout")
 @login_required
 def logout():
+    """
+    退出登录
+    """
     logout_user()
     flash("您已经退出登录", "success")
     return redirect(url_for(".index"))
