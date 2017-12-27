@@ -13,7 +13,7 @@ from wtforms.validators import Length, Email, EqualTo, DataRequired, URL, Number
 from jobplus.models import User, db, Company, Job
 
 class RegisterForm(FlaskForm):
-    """ 求职者注册
+    """ 注册
     """
 
     # 默认角色是用户
@@ -70,43 +70,6 @@ class CompanyRegisterForm(RegisterForm):
     username = StringField("企业名称", validators=[DataRequired("请输入用户名。"),
                                               Length(3, 24, message="用户名长度要在3~24个字符之间。"),
                                               Optional(strip_whitespace=True)])
-
-    email = StringField("邮箱", validators=[DataRequired("请输入邮箱。"),
-                                          Email(message="请输入合法的email地址。")])
-
-    password = PasswordField("密码", validators=[DataRequired("请输入密码。"),
-                                               Length(6, 24, message="密码长度要在6~24个字符之间。"),
-                                               Optional(strip_whitespace=True)
-                                               ])
-
-    repeat_password = PasswordField("重复密码", validators=[DataRequired("请确认密码。"),
-                                                        EqualTo("password"),
-                                                        Optional(strip_whitespace=True)
-                                                        ])
-    submit = SubmitField("提交")
-
-    def create_user(self):
-        """创建企业用户
-        """
-        user = User()
-        user.username = self.username.data
-        user.email = self.email.data
-        user.password = self.password.data
-        user.role = self.role
-        db.session.add(user)
-        db.session.commit()
-        return user
-
-    def validate_username(self, field):
-        if len(re.sub("[0-9a-zA-Z_]", "", field.data)) != 0:
-            raise ValidationError("用户名只能包含数字、字母、下划线。")
-        if User.query.filter_by(username=field.data).first():
-            raise ValidationError("用户名已经存在。")
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('邮箱已经存在')
-
 
 class LoginForm(FlaskForm):
 
