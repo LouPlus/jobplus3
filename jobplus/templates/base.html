@@ -2,14 +2,13 @@
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
-
         <title>{% block title %}{% endblock %}</title>
 
         <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="static/main.css">
-
         {% block header_css %}
         {% endblock %}
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     </head>
     <body>
@@ -29,17 +28,44 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li class="active">
+            <li class="{% if active == 'index' %}active{% endif %}">
                 <a href="/">首页<span class="sr-only">(current)</span></a>
             </li>
-            <li><a href="/">职位</a></li>
-            <li><a href="/">公司</a></li>
+            <li class="{% if active == 'job' %}active{% endif %}" >
+                <a href="{{ url_for('job.index') }}">职位<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="{% if active == 'company' %}active{% endif %}" >
+                <a href="{{ url_for('company.index') }}">公司<span class="sr-only">(current)</span></a>
+            </li>
+
+
+            {% if current_user.is_authenticated %}
+                 <li class="{% if active == 'admin' %}active{% endif %}">
+
+                     {% if current_user.is_admin  %}
+                        <a href="{{ url_for('admin.manage') }}">控制台
+                        <span class="sr-only">(current)</span>
+                        </a>
+                     {% endif %}
+                     {% if current_user.is_company %}
+                        <a href="{{ url_for('company.manage', company_id=current_user.id) }}">企业管理
+                            <span class="sr-only">(current)</span>
+                        </a>
+                     {% else %}
+                            <a href="{{ url_for('user.manage', company_id=current_user.id) }}">我的主页
+                                <span class="sr-only">(current)</span>
+                            </a>
+                     {% endif %}
+
+                </li>
+            {% endif %}
+
         </ul>
         <!-- 用户是否登录 -->
         <ul class="nav navbar-nav navbar-right">
             {% if not current_user.is_authenticated %}
-                <li><a href="{{ url_for('front.register') }}">求职者注册</a></li>
-                <li><a href="{{ url_for('front.register') }}">公司注册</a></li>
+                <li><a href="{{ url_for('front.userregister') }}">求职者注册</a></li>
+                <li><a href="{{ url_for('front.companyregister') }}">公司注册</a></li>
                 <li><a href="{{ url_for('front.login') }}">登录</a></li>
 
                 <!--
@@ -47,8 +73,8 @@
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">注册<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{ url_for('front.register') }}">求职者注册</a></li>
-                    <li><a href="{{ url_for('front.register') }}">公司注册</a></li>
+                    <li><a href="{{ url_for('front.userregister') }}">求职者注册</a></li>
+                    <li><a href="{{ url_for('front.companyregister') }}">公司注册</a></li>
                 </ul>
                 </li>
                 <li><a href="{{ url_for('front.login') }}">登录</a></li>
@@ -58,9 +84,13 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ current_user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">个人主页</a></li>
+                    {% if  current_user.role <= 10 %}
+                    <li><a href="/user/profile">个人信息</a></li>
+                    {% elif current_user.role <= 20 %}
+                        <li><a href="/company/profile/">企业信息</a></li>
+                    {% endif %}
                     <li role="separator" class="divider"></li>
-                    <li><a href="＃">退出登录</a></li>
+                    <li><a href="{{ url_for('front.logout') }}">退出登录</a></li>
                 </ul>
             </li>
         {% endif %}
@@ -69,6 +99,12 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     </nav>
+
+    <div class="container-fluid header">
+        {% block head %}
+        {% endblock %}
+    </div>
+
     <div class="container">
         <!-- 显示 flash 消息 -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -88,12 +124,18 @@
         {% block footer %}
         {% endblock %}
 
+
+
+
+
+
+
     </div>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="static/main.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
     {% block tail_js %}
     {% endblock %}

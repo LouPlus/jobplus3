@@ -9,6 +9,9 @@ user = Blueprint('user', __name__, url_prefix='/user')
 @user.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+    """
+    个人信息配置
+    """
     form = UserProfileForm(obj=current_user)
     if form.validate_on_submit():
         form.updated_profile(current_user)

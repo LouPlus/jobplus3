@@ -13,7 +13,8 @@ from wtforms.validators import Length, Email, EqualTo, DataRequired, URL, Number
 from jobplus.models import User, db, Company, Job
 
 class RegisterForm(FlaskForm):
-    """ 求职者注册
+    """
+    求职者注册
     """
 
     # 默认角色是用户
@@ -38,7 +39,8 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("提交")
 
     def create_user(self):
-        """创建用户
+        """
+        创建用户
         """
         user = User()
         user.username = self.username.data
@@ -57,7 +59,7 @@ class RegisterForm(FlaskForm):
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
-            raise ValidationError('邮箱已经存在')
+            raise ValidationError("邮箱已经存在")
 
 
 class CompanyRegisterForm(RegisterForm):
@@ -131,6 +133,9 @@ class LoginForm(FlaskForm):
 
 
 class UserProfileForm(FlaskForm):
+    """
+    用户配置表单
+    """
     real_name = StringField("姓名")
     email = StringField("邮箱", validators=[DataRequired(), Email()])
     password = PasswordField("密码(不填写保持不变)")
@@ -140,11 +145,17 @@ class UserProfileForm(FlaskForm):
     submit = SubmitField("提交")
 
     def validate_phone(self, field):
+        """
+        简单验证手机号码
+        """
         phone = field.data
         if not re.match("^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d{8}$", phone):
-            raise ValidationError('请输入有效的手机号。')
+            raise ValidationError("请输入有效的手机号。")
 
     def updated_profile(self, user):
+        """
+        更新
+        """
         user.real_name = self.real_name.data
         user.email = self.email.data
         if self.password.data:
@@ -156,23 +167,32 @@ class UserProfileForm(FlaskForm):
         db.session.commit()
 
 class CompanyProfileForm(FlaskForm):
+    """
+    企业信息配置表单
+    """
     name = StringField("企业名称")
     email = StringField("邮箱", validators=[DataRequired(message="请输入邮箱。"), Email(message="邮箱格式不正确。")])
     password = PasswordField("密码(不填写保持不变)")
-    slug = StringField("Slug", validators=[DataRequired(""), Length(3, 24, message="不要太长，也不要太短(3, 24)。")])
-    location = StringField("地址", validators=[Length(0, 64)])
-    site = StringField("公司网站", validators=[Length(0, 64)])
+    #slug = StringField("Slug", validators=[DataRequired(""), Length(3, 24, message="不要太长，也不要太短(3, 24)。")])
     logo = StringField("Logo")
+    site = StringField("公司网站", validators=[Length(0, 64)])
+    location = StringField("地址", validators=[Length(0, 64)])
     description = StringField("一句话描述", validators=[Length(0, 100)])
     about = TextAreaField("公司详情", validators=[Length(0, 1024)])
     submit = SubmitField("提交")
 
     def validate_phone(self, field):
+        """
+        简单验证手机号码
+        """
         phone = field.data
         if not re.match("^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d{8}$", phone):
-            raise ValidationError('请输入有效的手机号。')
+            raise ValidationError("请输入有效的手机号。")
 
     def updated_profile(self, user):
+        """
+        更新
+        """
         user.username = self.name.data
         user.email = self.email.data
         if self.password.data:
