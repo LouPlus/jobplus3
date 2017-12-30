@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ job.name }}
+{% endblock %}
+
+{% block head %}
+<div class="jumbotron">
+  <div class="container">
+    <div class="col-md-8">
+      <h2>{{ job.name }}</h2>
+      <span class="timesince">{{ job.created_at | timesince }}发布</span>
+      <p><span class="job-salary">{{ job.salary_low }}-{{ job.salary_high }}</span>
+          &nbsp;&nbsp;
+          {{ job.experience_requirement }}
+          &nbsp;&nbsp;
+          {{ job.degree_requirement }}
+      </p>
+    </div>
+    <div class="col-md-4">
+     TODO： 投递简历
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="col-md-8">
+  <div class="job-detail">
+    <h3>职位标签</h3> <br>
+    <p>{% for tag in job.tag_list %}
+    <span class="label label-default">{{ tag }}</span>
+    {% endfor %}</p>
+    <br>
+    <h3>职位详情</h3> <br>
+  {% autoescape false %}
+    <p>{{ job.description }}</p>
+{% endautoescape %}
+  </div>
+</div>
+<div class="col-md-4">
+  <div class="media">
+  <div class="media-left">
+    <a href="{{ url_for('company.detail', company_id=job.company.id) }}">
+      <img src="{{ job.company.logo }}" class="media-object" height="96" width="96">
+    </a>
+  </div>
+  <div class="media-body">
+  </div>
+</div>
+  <h3>{{ job.company.name }}</h3>
+  {% for tag in job.company.some_tags %}
+    <span class="label label-default">{{ tag }}</span>
+    {% endfor %}
+ <hr>
+<a href="{{ url_for('company.company_jobs', company_id=job.company.id) }}">
+    <p>在招职位：{{ job.company.get_job_count }}</p>
+</a>
+</div>
+{% endblock %}

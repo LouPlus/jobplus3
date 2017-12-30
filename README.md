@@ -42,7 +42,7 @@ $ FLUSH PRIVILEGES;
 在 config.py 中设置 CURRENT_ENV
 
 
-# 使用flask-migrate管理数据库
+使用flask-migrate管理数据库
 在项目根目录下执行命令：
 
 ```
@@ -61,4 +61,15 @@ mysql> use jobplus_dev;
 mysql> show create table user;
 mysql> show create table company;
 mysql> show create table job;
+```
+
+3.同步假数据
+```bash
+jobplus3$ export FLASK_APP=manage.py 
+jobplus3$ flask shell
+
+In [1]: from scripts.input import *
+In [2]: f = FakerData()
+In [3]: f.fake_company()
+
 ```

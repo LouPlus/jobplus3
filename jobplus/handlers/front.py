@@ -7,17 +7,20 @@ from flask import flash, redirect, url_for, request
 from flask_login import login_user, logout_user, login_required
 
 from jobplus.forms import  LoginForm, RegisterForm, CompanyRegisterForm
-from jobplus.models import User
+from jobplus.models import User, Job, Company
 
 front = Blueprint('front', __name__)
 
 @front.route('/')
 def index():
     """
-    首页
+    首页, 显示所有公司和职位的主页面
     """
-    return render_template('index.html')
+    newest_jobs = Job.query.filter(Job.is_open.is_(True)).order_by(Job.created_at.desc()).limit(9)
+    companies = Company.query.filter().order_by(Company.created_at.desc()).all()
+    newest_companies = list(filter(lambda x:x.get_job_count, companies))[:12]
 
+    return render_template("index.html", active="index", newest_jobs=newest_jobs, newest_companies=newest_companies)
 
 @front.route("/userregister", methods=["GET", "POST"])
 def userregister():
@@ -76,3 +79,5 @@ def logout():
     logout_user()
     flash("您已经退出登录", "success")
     return redirect(url_for(".index"))
+
+

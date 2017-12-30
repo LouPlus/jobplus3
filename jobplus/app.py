@@ -1,10 +1,35 @@
 #coding=utf-8
 
+
+import datetime
 from flask import Flask
 from jobplus.config import configs, CURRENT_ENV
 from jobplus.models import db, User
 from flask_migrate import Migrate
 from flask_login import LoginManager
+
+
+# 注册模板过滤器
+def register_filters(app):
+
+    @app.template_filter()
+    def timesince(value):
+        """
+        格式化时间
+        """
+        now = datetime.datetime.utcnow()
+        delta = now - value
+        if delta.days > 365:
+            return '{}年前'.format(delta.days // 365)
+        if delta.days > 30:
+            return '{}月前'.format(delta.days // 30)
+        if delta.days > 0:
+            return '{}天前'.format(delta.days)
+        if delta.seconds > 3600:
+            return '{}小时前'.format(delta.seconds // 3600)
+        if delta.seconds > 60:
+            return '{}分钟前'.format(delta.seconds // 60)
+        return '刚刚'
 
 def register_extensions(app):
     """
@@ -50,4 +75,5 @@ def create_app():
 
     register_extensions(app)
     register_blueprints(app)
+    register_filters(app)
     return app

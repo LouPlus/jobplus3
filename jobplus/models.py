@@ -69,30 +69,72 @@ class User(Base, UserMixin):
 class Company(Base):
     __tablename__ = 'company'
 
+    # TODO 建议加入 标签
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32), unique=True, index=True, nullable=False)
-    email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    logo = db.Column(db.String(64), nullable=False)
-    location = db.Column(db.String(32))
-    description = db.Column(db.String(1500))
+    name = db.Column(db.String(32), unique=True, index=True, nullable=False) #企业名称
+    email = db.Column(db.String(64), unique=True, index=True, nullable=False) #企业帐号管理者邮箱
+    logo = db.Column(db.String(256), nullable=False) #企业logo
+    site = db.Column(db.String(128)) # 企业官网地址
+    location = db.Column(db.String(32)) #地址
+    description = db.Column(db.String(250)) #一句话描述
+    tags = db.Column(db.String(128)) # 标签
+    about = db.Column(db.Text) # 公司详情
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'))
     user = db.relationship('User', uselist=False, backref=db.backref('company', uselist=False))
 
     def __repr__(self):
         return '<Company:{}>'.format(self.name)
 
+    @property
+    def tag_list(self):
+        """
+        获取标签列表
+        """
+        return self.tags.split(",")
+
+    @property
+    def some_tags(self):
+        """
+        获取标签列表前三个
+        """
+        return self.tags.split(",")[:3]
+
+    @property
+    def get_job_count(self):
+        """
+        获取该企业发布的职位数量
+        """
+        return Job.query.filter(Job.company_id==self.id).count()
+
+
 
 class Job(Base):
     __tablename__ = 'job'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), nullable=False)
-    salary_low = db.Column(db.Integer, nullable=False)
-    salary_high = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.String(24))
-    description = db.Column(db.String(1500))
+    name = db.Column(db.String(128), nullable=False) # 职位名称
+    salary_low = db.Column(db.Integer, nullable=False) # 最低薪资
+    salary_high = db.Column(db.Integer, nullable=False) # 最高薪资
+    location = db.Column(db.String(24)) # 工作地点
+    tags = db.Column(db.String(128)) # 标签
+    degree_requirement = db.Column(db.String(32)) # 学历要求
+    experience_requirement = db.Column(db.String(32)) # 经验要求
+    description = db.Column(db.Text) #职位描述
     company_id = db.Column(db.Integer, db.ForeignKey('company.id', ondelete='CASCADE'))
     company = db.relationship('Company', uselist=False, backref=db.backref('jobs', lazy='dynamic'))
 
+    # 是否是全职
+    is_fulltime = db.Column(db.Boolean, default=True)
+    # 是否在招聘
+    is_open = db.Column(db.Boolean, default=True)
+
     def __repr__(self):
         return '<Job:{}>'.format(self.name)
+
+    @property
+    def tag_list(self):
+        """
+        获取标签列表
+        """
+        return self.tags.split(",")
+
