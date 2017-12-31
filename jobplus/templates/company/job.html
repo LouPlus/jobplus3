@@ -1,7 +1,12 @@
-{%  extends "admin/index.html" %}
+{%  extends "company/manage.html" %}
+
+    {% block operation %}
+        {{ render_operate_company_job() }}
+    {% endblock %}
 
 
-{% block admin %}
+
+{% block company %}
     <table class="table">
   <thead>
     <tr>
@@ -25,19 +30,19 @@
         <td>
          <div class="btn-group" role="group">
             {% if job.is_open %}
-            <a href="{{ url_for('admin.show_job', job_id=job.id) }}" type="button" class="btn btn-default" title＝"查看">
+            <a href="{{ url_for('company.edit_job', job_id=job.id) }}" type="button" class="btn btn-default" title＝"编辑">
          {% else %}
-            <a href="#" type="button" class="btn btn-default" disabled="true"  title＝"查看">
+            <a href="#" type="button" class="btn btn-default" disabled="true"  title＝"编辑">
          {% endif %}
-                查看
+                编辑
             </a>
 
 
-            <a href="{{ url_for('admin.close_job', job_id=job.id) }}" type="button" class="btn btn-default">
+            <a href="{{ url_for('company.close_job', job_id=job.id) }}" type="button" class="btn btn-default">
                 {% if job.is_open %}下线{% else %}上线{% endif %}
             </a>
 
-         <a href="{{ url_for('admin.disable_job', job_id=job.id) }}" type="button" class="btn btn-default">
+             <a href="{{ url_for('company.disable_job', job_id=job.id) }}" type="button" class="btn btn-default">
                 删除
             </a>
           </div>

@@ -96,7 +96,7 @@ def edit_user():
     user = User.query.get_or_404(user_id)
     if not user.is_admin:
         if user.is_company:
-            company = Company.query.filter(Company.user == user).limit(1)
+            company = Company.query.filter(Company.user == user).first()
             company.name = user.username
             company.email = user.email
             form = CompanyProfileForm(obj=company)
@@ -140,11 +140,11 @@ def disable_user():
     return redirect(url_for("admin.manage_user"))
 
 
-# TODO
-@admin.route("manage/delete/job")
+
+@admin.route("manage/close/job")
 @login_required
 @admin_required
-def disable_job():
+def close_job():
     """
     下线职位
     """
@@ -159,4 +159,22 @@ def disable_job():
     db.session.add(job)
     db.session.commit()
     return redirect(url_for("admin.manage_job"))
+
+
+@admin.route("manage/delete/job")
+@login_required
+@admin_required
+def disable_job():
+    """
+    删除职位
+    """
+    job_id = request.args.get("job_id", "")
+    job = Job.query.get_or_404(job_id)
+    if not job.enable:
+        job.enable = False
+    flash("职位已删除。", "success")
+    db.session.add(job)
+    db.session.commit()
+    return redirect(url_for("admin.manage_job"))
+
 

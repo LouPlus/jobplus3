@@ -148,3 +148,25 @@ class Job(Base):
         """
         return self.tags.split(",")
 
+
+class Delivery(Base):
+    __tablename__ = "delivery"
+
+    STATUS_WAITING = 1
+    STATUS_REJECT = 2
+    STATUS_ACCEPT = 3
+
+    id = db.Column(db.Integer, primary_key=True)
+    job_id = db.Column(db.Integer, db.ForeignKey("job.id", ondelete="SET NULL"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"))
+    company_id = db.Column(db.Integer)
+    status = db.Column(db.SmallInteger, default=STATUS_WAITING)
+    response = db.Column(db.String(256))
+
+    @property
+    def user(self):
+        return User.query.get(self.user_id)
+
+    @property
+    def job(self):
+        return Job.query.get(self.job_id)
