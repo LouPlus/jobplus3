@@ -35,11 +35,15 @@
         <td>{{ user.email }}</td>
         <td>
          <div class="btn-group" role="group">
+         {% if user.enable %}
             <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" type="button" class="btn btn-default" title＝"编辑">
+         {% else %}
+            <a href="#" type="button" class="btn btn-default" disabled="true" title＝"编辑">
+         {% endif %}
                 编辑
             </a>
             <a href="{{ url_for('admin.disable_user', user_id=user.id) }}" type="button" class="btn btn-default">
-                {% if user %}启用{% else %}禁用{% endif %}
+                {% if user.enable %}禁用{% else %}启用{% endif %}
             </a>
           </div>
         </td>

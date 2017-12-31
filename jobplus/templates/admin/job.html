@@ -29,11 +29,17 @@
         <td>{{ job.created_at }}</td>
         <td>
          <div class="btn-group" role="group">
+            {% if job.enable %}
             <a href="{{ url_for('admin.show_job', job_id=job.id) }}" type="button" class="btn btn-default" title＝"查看">
+         {% else %}
+            <a href="#" type="button" class="btn btn-default" disabled="true"  title＝"查看">
+         {% endif %}
                 查看
             </a>
+
+
             <a href="{{ url_for('admin.disable_job', job_id=job.id) }}" type="button" class="btn btn-default">
-                {% if job %}下线{% else %}上线{% endif %}
+                {% if job.enable %}下线{% else %}上线{% endif %}
             </a>
           </div>
         </td>

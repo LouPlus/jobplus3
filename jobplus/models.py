@@ -34,6 +34,8 @@ class User(Base, UserMixin):
     work_years = db.Column(db.SmallInteger)
     role = db.Column(db.SmallInteger, default=ROLE_USER)
     resume_url = db.Column(db.String(128))
+    # 帐号是启用
+    enable = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<User:{}>'.format(self.username)
@@ -65,6 +67,12 @@ class User(Base, UserMixin):
         """
         return self.role == self.ROLE_COMPANY
 
+    @property
+    def is_everyone(self):
+        """
+        判断是否为普通用户
+        """
+        return self.role == self.ROLE_USER
 
 class Company(Base):
     __tablename__ = 'company'
@@ -125,8 +133,10 @@ class Job(Base):
 
     # 是否是全职
     is_fulltime = db.Column(db.Boolean, default=True)
-    # 是否在招聘
+    # 是否在招聘(上线)
     is_open = db.Column(db.Boolean, default=True)
+    # 该职位是否被删除
+    enable = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<Job:{}>'.format(self.name)

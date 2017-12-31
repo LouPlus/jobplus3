@@ -5,7 +5,7 @@ from flask import Blueprint, url_for, redirect
 from flask_login import login_required
 
 from jobplus.decorators import admin_required
-from jobplus.models import User, Job, Company
+from jobplus.models import User, Job, Company, db
 from jobplus.forms import RegisterForm, CompanyRegisterForm, UserProfileForm, CompanyProfileForm
 
 
@@ -127,7 +127,18 @@ def disable_user():
     """
     禁用账户
     """
-    pass
+    user_id = request.args.get("user_id", "")
+    user = User.query.get_or_404(user_id)
+    if user.enable:
+        user.enable = False
+        flash("帐号已禁用", "success")
+    else:
+        user.enable = True
+        flash("帐号已启用", "success")
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for("admin.manage_user"))
+
 
 # TODO
 @admin.route("manage/delete/job")
@@ -137,5 +148,15 @@ def disable_job():
     """
     下线职位
     """
-    pass
+    job_id = request.args.get("job_id", "")
+    job = Job.query.get_or_404(job_id)
+    if job.enable:
+        job.enable = False
+        flash("职位已下线。", "success")
+    else:
+        job.enable = True
+        flash("职位已上线。", "success")
+    db.session.add(job)
+    db.session.commit()
+    return redirect(url_for("admin.manage_job"))
 
