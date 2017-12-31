@@ -1,0 +1,16 @@
+{% extends "admin/index.html" %}
+{% from "macros.html" import render_form, render_operate %}
+
+{% block title %}{{ topic }}{% endblock %}
+
+
+    {% block operation %}
+        {{ render_operate() }}
+    {% endblock %}
+
+ {% block admin %}
+<div class="form">
+  <h2>{{ topic }}</h2>
+  {{ render_form(form, post_url) }}
+</div>
+{% endblock %}

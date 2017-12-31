@@ -11,6 +11,7 @@ class BaseConfig(object):
     配置基类
     """
     SECRET_KEY = os.urandom(24)
+    ADMIN_PER_PAGE = 10
 
 
 class DevelopmentConfig(BaseConfig):

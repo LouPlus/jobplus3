@@ -46,8 +46,7 @@
                         <a href="{{ url_for('admin.manage') }}">控制台
                         <span class="sr-only">(current)</span>
                         </a>
-                     {% endif %}
-                     {% if current_user.is_company %}
+                     {% elif current_user.is_company %}
                         <a href="{{ url_for('company.manage', company_id=current_user.id) }}">企业管理
                             <span class="sr-only">(current)</span>
                         </a>

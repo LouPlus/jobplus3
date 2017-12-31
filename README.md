@@ -63,7 +63,7 @@ mysql> show create table company;
 mysql> show create table job;
 ```
 
-3.同步假数据
+3.同步数据
 ```bash
 jobplus3$ export FLASK_APP=manage.py 
 jobplus3$ flask shell

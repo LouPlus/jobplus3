@@ -136,7 +136,7 @@ class UserProfileForm(FlaskForm):
     """
     用户配置表单
     """
-    real_name = StringField("姓名")
+    username = StringField("姓名")
     email = StringField("邮箱", validators=[DataRequired(), Email()])
     password = PasswordField("密码(不填写保持不变)")
     phone = StringField("手机号")
@@ -156,7 +156,7 @@ class UserProfileForm(FlaskForm):
         """
         更新
         """
-        user.real_name = self.real_name.data
+        user.username = self.username.data
         user.email = self.email.data
         if self.password.data:
             user.password = self.password.data
