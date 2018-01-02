@@ -93,3 +93,22 @@
     </div>
 </div>
 {% endmacro %}
+
+{% macro render_operate() %}
+ <a href="{{ url_for('admin.create_user') }}" type="button" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          添加用户
+    </a>
+
+    <a href="{{ url_for('admin.create_company') }}" type="button" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          添加企业
+    </a>
+{% endmacro %}
+
+{% macro render_operate_company_job() %}
+     <a href="{{ url_for('company.publish_job') }}" type="button" class="btn btn-primary">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          发布职位
+    </a>
+{% endmacro %}

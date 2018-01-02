@@ -17,8 +17,16 @@
           {{ job.degree_requirement }}
       </p>
     </div>
-    <div class="col-md-4">
-     TODO： 投递简历
+<div class="col-md-4">
+      {% if current_user.is_authenticated and current_user.is_everyone%}
+          {% if not applied %}
+            <a href="{{ url_for('job.apply', job_id=job.id) }}"class="btn btn-success btn-lg dilivery-btn">投递简历</a>
+                {% else %}
+            <a href="#"class="btn btn-success btn-lg dilivery-btn" disabled="disabled">已投递</a>
+        {% endif %}
+    {% else %}
+              <a href="/login" class="btn btn-success btn-lg dilivery-btn" >请登录后投递</a>
+    {% endif %}
     </div>
   </div>
 </div>

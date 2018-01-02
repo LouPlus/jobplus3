@@ -4,7 +4,7 @@ import re
 
 from flask_wtf import FlaskForm
 
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms import TextAreaField, IntegerField
 
 from wtforms import ValidationError
@@ -136,7 +136,7 @@ class UserProfileForm(FlaskForm):
     """
     用户配置表单
     """
-    real_name = StringField("姓名")
+    username = StringField("姓名")
     email = StringField("邮箱", validators=[DataRequired(), Email()])
     password = PasswordField("密码(不填写保持不变)")
     phone = StringField("手机号")
@@ -156,7 +156,7 @@ class UserProfileForm(FlaskForm):
         """
         更新
         """
-        user.real_name = self.real_name.data
+        user.username = self.username.data
         user.email = self.email.data
         if self.password.data:
             user.password = self.password.data
@@ -178,7 +178,7 @@ class CompanyProfileForm(FlaskForm):
     site = StringField("公司网站", validators=[Length(0, 64)])
     location = StringField("地址", validators=[Length(0, 64)])
     description = StringField("一句话描述", validators=[Length(0, 100)])
-    about = TextAreaField("公司详情", validators=[Length(0, 1024)])
+    about = TextAreaField("公司详情", validators=[Length(0, 1500)])
     submit = SubmitField("提交")
 
     def validate_phone(self, field):
@@ -206,3 +206,49 @@ class CompanyProfileForm(FlaskForm):
         db.session.add(user)
         db.session.add(company)
         db.session.commit()
+
+
+class JobForm(FlaskForm):
+    name = StringField("职位名称")
+    salary_low = IntegerField("最低薪资")
+    salary_high = IntegerField("最高薪资")
+    location = StringField("工作地点（多个用,隔开）")
+    tags = StringField("职位标签（多个用,隔开）")
+    degree_requirement = SelectField(
+        "学历要求",
+        choices=[
+            ("不限", "不限"),
+            ("专科", "专科"),
+            ("本科", "本科"),
+            ("硕士", "硕士"),
+            ("博士", "博士")
+        ]
+    )
+    experience_requirement = SelectField(
+        "经验要求(年)",
+        choices=[
+            ("不限", "不限"),
+            ("1年", "1年"),
+            ("2年", "2年"),
+            ("3年", "3年"),
+            ("1-3年", "1-3年"),
+            ("3-5年", "3-5年"),
+            ("5年以上", "5年以上")
+        ]
+    )
+    description = TextAreaField("职位描述", validators=[Length(0, 1500)])
+    submit = SubmitField("发布")
+
+    def create_job(self, company):
+        job = Job()
+        self.populate_obj(job)
+        job.company_id = company.id
+        db.session.add(job)
+        db.session.commit()
+        return job
+
+    def update_job(self, job):
+        self.populate_obj(job)
+        db.session.add(job)
+        db.session.commit()
+        return job

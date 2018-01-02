@@ -35,10 +35,11 @@ def userregister():
         return redirect(url_for('.login'))
     return render_template('register.html', form=form, post_url=post_url, topic="用户注册")
 
+
 @front.route("/companyregister", methods=["GET", "POST"])
 def companyregister():
     """
-    公司注册
+    企业注册
     """
     form = CompanyRegisterForm()
     post_url = url_for("front.companyregister")
@@ -60,9 +61,8 @@ def login():
         login_user(user, form.remember_me.data)
         next = "user.profile"
         if user.is_admin:
-            next = "admin.index"
             flash('登陆成功！页面待完成', 'success')
-            return redirect(url_for('.index'))
+            next = "admin.manage"
         elif user.is_company:
             flash('登陆成功！页面待完成', 'success')
             next = "company.profile"
